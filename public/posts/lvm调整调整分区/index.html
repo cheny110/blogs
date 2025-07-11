@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr" class="h-full">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>LVM调整调整分区 | Cheny&#39;s Blog</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+
+<link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+<link rel="shortcut icon" href="/favicon/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+<link rel="manifest" href="/favicon/site.webmanifest" />
+
+
+
+  
+    
+    
+      
+        <link rel="stylesheet" href="/css/main.css">
+      
+    
+  
+
+
+
+
+
+<link rel="stylesheet" href="/css/style.min.b5fece9e2cbcfd48f4f9b3899d395b906b52021e9f44b190b2f17b2b4bc9a057.css" media="screen" integrity="sha256-tf7Oniy8/Uj0&#43;bOJnTlbkGtSAh6fRLGQsvF7K0vJoFc=">
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', (event) => {
+    document.querySelectorAll('pre code').forEach((el) => {
+      hljs.highlightElement(el);
+      
+      setTimeout(() => {
+        el.style.backgroundColor = 'transparent';
+        el.parentElement.style.backgroundColor = '#ffffff';
+      }, 10);
+    });
+  });
+</script>
+
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+      <script src="/js/main.js"></script>
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left: "$$", right: "$$", display: true},
+        {left: "$", right: "$", display: false}
+      ],
+      throwOnError: false
+    });
+    
+    
+    document.querySelectorAll('pre code').forEach(function(codeBlock) {
+      
+      let language = '';
+      codeBlock.className.split(' ').forEach(function(cls) {
+        if (cls.startsWith('language-')) {
+          language = cls.substring(9);
+        }
+      });
+      
+      
+      const pre = codeBlock.parentNode;
+      const wrapper = pre.parentNode;
+      
+      
+      const container = document.createElement('div');
+      container.className = 'code-block-container';
+      container.style.backgroundColor = '#ffffff';
+      
+      
+      const header = document.createElement('div');
+      header.className = 'code-block-header';
+      
+      
+      if (language) {
+        const langLabel = document.createElement('span');
+        langLabel.className = 'code-language-label';
+        langLabel.textContent = language.toUpperCase();
+        header.appendChild(langLabel);
+      }
+      
+      
+      const copyButton = document.createElement('button');
+      copyButton.className = 'copy-button';
+      copyButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg> Copy';
+      
+      copyButton.addEventListener('click', function() {
+        
+        const code = codeBlock.textContent;
+        
+        
+        navigator.clipboard.writeText(code).then(function() {
+          
+          copyButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Copied!';
+          
+          
+          setTimeout(function() {
+            copyButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg> Copy';
+          }, 2000);
+        });
+      });
+      
+      header.appendChild(copyButton);
+      
+      
+      if (pre.parentNode) {
+        pre.parentNode.removeChild(pre);
+      }
+      
+      
+      pre.style.backgroundColor = '#ffffff';
+      codeBlock.style.backgroundColor = '#ffffff';
+      
+      
+      container.appendChild(header);
+      container.appendChild(pre);
+      
+      
+      wrapper.appendChild(container);
+      
+      
+      hljs.highlightElement(codeBlock);
+      
+      
+      setTimeout(() => {
+        pre.style.backgroundColor = '#ffffff';
+        codeBlock.style.backgroundColor = '#ffffff';
+      }, 50);
+    });
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    const footnoteBacklinks = document.querySelectorAll('.footnote-backref');
+    
+    footnoteBacklinks.forEach(function(backlink) {
+      backlink.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        
+        const href = backlink.getAttribute('href');
+        
+        if (href) {
+          
+          const target = document.querySelector(href);
+          
+          if (target) {
+            
+            target.scrollIntoView({ behavior: 'smooth' });
+            
+            
+            target.classList.add('footnote-highlight');
+            setTimeout(function() {
+              target.classList.remove('footnote-highlight');
+            }, 2000);
+          }
+        }
+      });
+    });
+  });
+</script>
+
+
+</head>
+<body class="flex flex-col bg-gray-50 font-bilingual">
+  <header class="fixed top-0 left-0 z-30 w-full bg-white shadow-sm">
+    <div class="w-full max-w-4xl mx-auto px-6 overflow-x-auto sm:overflow-visible">
+      <div class="flex items-center justify-between py-3">
+  <div class="text-lg sm:text-xl font-bold flex-shrink-0 max-w-[40%] sm:max-w-md truncate">
+    <a href="/" class="text-current hover:text-blue-600 transition-colors no-underline">
+      Cheny&#39;s Blog
+    </a>
+  </div>
+  
+  <nav class="flex justify-end w-full whitespace-nowrap">
+    <ul class="flex flex-row items-center space-x-2 sm:space-x-4 md:space-x-6 py-2">
+    <li class="text-gray-600 hover:text-gray-900 text-base sm:text-lg">
+      <a
+        class="px-2 py-1 sm:px-3 sm:py-2 rounded hover:bg-gray-100 transition-colors" href="/">Home</a>
+    </li>
+    <li class="text-gray-600 hover:text-gray-900 text-base sm:text-lg">
+      <a
+        class="px-2 py-1 sm:px-3 sm:py-2 rounded hover:bg-gray-100 transition-colors" aria-current="true" class="ancestor font-semibold" href="/posts/">Posts</a>
+    </li>
+    <li class="text-gray-600 hover:text-gray-900 text-base sm:text-lg">
+      <a
+        class="px-2 py-1 sm:px-3 sm:py-2 rounded hover:bg-gray-100 transition-colors" href="/tags/">Tags</a>
+    </li>
+    <li class="text-gray-600 hover:text-gray-900 text-base sm:text-lg">
+      <a
+        class="px-2 py-1 sm:px-3 sm:py-2 rounded hover:bg-gray-100 transition-colors">About</a>
+    </li>
+    </ul>
+  </nav>
+
+</div>
+    </div>
+  </header>
+  
+  <div class="flex-1 flex flex-col min-h-screen pt-24">
+    <main class="flex-1 w-full max-w-4xl mx-auto px-6 overflow-x-auto sm:overflow-visible">
+      
+  <article class="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+    <header class="p-8 border-b border-gray-100 relative overflow-hidden">
+      
+      <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-blue-50 to-transparent rounded-full opacity-70 -z-0 blur-2xl transform translate-x-1/4 -translate-y-1/4"></div>
+      
+      
+      
+      
+      <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 relative">LVM调整调整分区</h1>
+      
+      <div class="flex flex-wrap items-center text-sm text-gray-500 gap-4 relative">
+        
+        
+        
+        <time datetime="2025-07-11T09:29:37&#43;08:00" class="flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          2025-07-11
+        </time>
+        
+        
+        <span class="flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          2 min read
+        </span>
+
+        
+        <span id="busuanzi_container_page_pv" class="inline-flex items-center whitespace-nowrap">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5 text-gray-400 inline-block flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+          </svg><span class="whitespace-nowrap">Page Views <span id="busuanzi_value_page_pv"></span></span>
+        </span>
+      </div>
+    </header>
+
+    <div class="p-8 prose prose-sm sm:prose lg:prose-lg max-w-none">
+      <p>Linux 系统默认分区大小通常面临/home空间太大，/root 空间太小的问题。采用LVM分区管理可以比较方便的调整各部分分区大小。
+以下针对默认的ext4分区格式来说明将/home的空间减小一部分扩展到root分区上。
+首先，重启系统进入tty2，不开启桌面会话。并以root账户登录，若以普通账户登录相关进程会占用/home分区，导致无法卸载home分区。
+使用df -h 查看系统的逻辑卷分区和对应的分区大小，挂载位置，可用空间等情况。
+随后，卸载/home分区```
+umount /home</p>
+<pre tabindex="0"><code>使用e2fscheck 检查文件系统是否有错误。(必须)
+</code></pre><p>e2fscheck -f /dev/ArchinstallVg/home</p>
+<pre tabindex="0"><code>减少/home 分区逻辑卷物理空间大小，不可小于当前已占用空间
+</code></pre><p>resize2fs /dev/ArchinstallVg/home 200G #缩减到200G</p>
+<pre tabindex="0"><code>使用lvreduce 或lvresize 缩减逻辑卷大小
+</code></pre><p>lvreduce -L [new_size] /dev/ArchinstallVg/home</p>
+<pre tabindex="0"><code>
+再次检查文件系统是否有误
+</code></pre><p>e2fscheck -f /dev/ArchinstallVg/home</p>
+<pre tabindex="0"><code>使用lvextend 将未使用空间扩展到/root分区
+</code></pre><p>lvextend -L +%100FREE /dev/ArchinstallVg/root</p>
+<pre tabindex="0"><code>检查文件系统
+</code></pre><p>e2fscheck -f /dev/ArchinstallVg/home</p>
+<pre tabindex="0"><code>确认无误后，重新挂载/home分区
+</code></pre><p>mount /dev/ArchiinstallVg/root</p>
+<pre tabindex="0"><code>至此，容量调整完毕
+</code></pre>
+    </div>
+
+    
+    <div class="px-8 pb-2 text-sm text-gray-500 flex items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+      </svg>
+      Last updated on 2025-07-11
+    </div>
+    
+
+    <footer class="px-8 py-6 bg-gray-50 border-t border-gray-100">
+      
+
+      
+      
+      <div class="mt-6 flex justify-center">
+        <a href="/" class="inline-flex items-center text-gray-600 hover:text-blue-600 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back to Home
+        </a>
+      </div>
+    </footer>
+  </article>
+
+  
+  <div class="max-w-4xl mx-auto mt-8 bg-white rounded-lg shadow-md overflow-hidden" style="--tw-prose-body: #374151; --tw-prose-headings: #111827; --tw-prose-links: #2563eb; --tw-prose-links-hover: #1d4ed8; --tw-prose-code-bg: #f3f4f6; color: #374151; background-color: #ffffff;">
+    
+ 
+  </div>
+
+    </main>
+  </div>
+  
+  <footer class="w-full max-w-4xl mx-auto px-6 overflow-x-auto sm:overflow-visible">
+    <div class="py-8 border-t border-gray-200 bg-gray-50 shadow-inner mt-10">
+  <div class="container mx-auto px-4 max-w-4xl">
+    
+     
+    
+
+    
+    <div class="flex justify-center space-x-8">
+      
+      
+
+      
+      
+
+      
+      
+    </div>
+
+    <div class="text-center mt-6 text-sm text-gray-500">
+      &copy; 2025 Cheny&#39;s Blog | Powered by <a href="https://github.com/Daucloud/hugo-theme-void" class="text-gray-600 hover:text-gray-900 hover:underline">hugo-theme-void</a> | <span id="busuanzi_container_site_pv" style="display: none;">Total visits: <span id="busuanzi_value_site_pv" class="text-gray-600"></span></span>
+    </div>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  </div>
+</div>
+
+  </footer>
+</body>
+</html>

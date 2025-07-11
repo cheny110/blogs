@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr" class="h-full">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Ubuntu仓库构建 | Cheny&#39;s Blog</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+
+<link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+<link rel="shortcut icon" href="/favicon/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+<link rel="manifest" href="/favicon/site.webmanifest" />
+
+
+
+  
+    
+    
+      
+        <link rel="stylesheet" href="/css/main.css">
+      
+    
+  
+
+
+
+
+
+<link rel="stylesheet" href="/css/style.min.b5fece9e2cbcfd48f4f9b3899d395b906b52021e9f44b190b2f17b2b4bc9a057.css" media="screen" integrity="sha256-tf7Oniy8/Uj0&#43;bOJnTlbkGtSAh6fRLGQsvF7K0vJoFc=">
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', (event) => {
+    document.querySelectorAll('pre code').forEach((el) => {
+      hljs.highlightElement(el);
+      
+      setTimeout(() => {
+        el.style.backgroundColor = 'transparent';
+        el.parentElement.style.backgroundColor = '#ffffff';
+      }, 10);
+    });
+  });
+</script>
+
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+      <script src="/js/main.js"></script>
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left: "$$", right: "$$", display: true},
+        {left: "$", right: "$", display: false}
+      ],
+      throwOnError: false
+    });
+    
+    
+    document.querySelectorAll('pre code').forEach(function(codeBlock) {
+      
+      let language = '';
+      codeBlock.className.split(' ').forEach(function(cls) {
+        if (cls.startsWith('language-')) {
+          language = cls.substring(9);
+        }
+      });
+      
+      
+      const pre = codeBlock.parentNode;
+      const wrapper = pre.parentNode;
+      
+      
+      const container = document.createElement('div');
+      container.className = 'code-block-container';
+      container.style.backgroundColor = '#ffffff';
+      
+      
+      const header = document.createElement('div');
+      header.className = 'code-block-header';
+      
+      
+      if (language) {
+        const langLabel = document.createElement('span');
+        langLabel.className = 'code-language-label';
+        langLabel.textContent = language.toUpperCase();
+        header.appendChild(langLabel);
+      }
+      
+      
+      const copyButton = document.createElement('button');
+      copyButton.className = 'copy-button';
+      copyButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg> Copy';
+      
+      copyButton.addEventListener('click', function() {
+        
+        const code = codeBlock.textContent;
+        
+        
+        navigator.clipboard.writeText(code).then(function() {
+          
+          copyButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Copied!';
+          
+          
+          setTimeout(function() {
+            copyButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg> Copy';
+          }, 2000);
+        });
+      });
+      
+      header.appendChild(copyButton);
+      
+      
+      if (pre.parentNode) {
+        pre.parentNode.removeChild(pre);
+      }
+      
+      
+      pre.style.backgroundColor = '#ffffff';
+      codeBlock.style.backgroundColor = '#ffffff';
+      
+      
+      container.appendChild(header);
+      container.appendChild(pre);
+      
+      
+      wrapper.appendChild(container);
+      
+      
+      hljs.highlightElement(codeBlock);
+      
+      
+      setTimeout(() => {
+        pre.style.backgroundColor = '#ffffff';
+        codeBlock.style.backgroundColor = '#ffffff';
+      }, 50);
+    });
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    const footnoteBacklinks = document.querySelectorAll('.footnote-backref');
+    
+    footnoteBacklinks.forEach(function(backlink) {
+      backlink.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        
+        const href = backlink.getAttribute('href');
+        
+        if (href) {
+          
+          const target = document.querySelector(href);
+          
+          if (target) {
+            
+            target.scrollIntoView({ behavior: 'smooth' });
+            
+            
+            target.classList.add('footnote-highlight');
+            setTimeout(function() {
+              target.classList.remove('footnote-highlight');
+            }, 2000);
+          }
+        }
+      });
+    });
+  });
+</script>
+
+
+</head>
+<body class="flex flex-col bg-gray-50 font-bilingual">
+  <header class="fixed top-0 left-0 z-30 w-full bg-white shadow-sm">
+    <div class="w-full max-w-4xl mx-auto px-6 overflow-x-auto sm:overflow-visible">
+      <div class="flex items-center justify-between py-3">
+  <div class="text-lg sm:text-xl font-bold flex-shrink-0 max-w-[40%] sm:max-w-md truncate">
+    <a href="/" class="text-current hover:text-blue-600 transition-colors no-underline">
+      Cheny&#39;s Blog
+    </a>
+  </div>
+  
+  <nav class="flex justify-end w-full whitespace-nowrap">
+    <ul class="flex flex-row items-center space-x-2 sm:space-x-4 md:space-x-6 py-2">
+    <li class="text-gray-600 hover:text-gray-900 text-base sm:text-lg">
+      <a
+        class="px-2 py-1 sm:px-3 sm:py-2 rounded hover:bg-gray-100 transition-colors" href="/">Home</a>
+    </li>
+    <li class="text-gray-600 hover:text-gray-900 text-base sm:text-lg">
+      <a
+        class="px-2 py-1 sm:px-3 sm:py-2 rounded hover:bg-gray-100 transition-colors" aria-current="true" class="ancestor font-semibold" href="/posts/">Posts</a>
+    </li>
+    <li class="text-gray-600 hover:text-gray-900 text-base sm:text-lg">
+      <a
+        class="px-2 py-1 sm:px-3 sm:py-2 rounded hover:bg-gray-100 transition-colors" href="/tags/">Tags</a>
+    </li>
+    <li class="text-gray-600 hover:text-gray-900 text-base sm:text-lg">
+      <a
+        class="px-2 py-1 sm:px-3 sm:py-2 rounded hover:bg-gray-100 transition-colors">About</a>
+    </li>
+    </ul>
+  </nav>
+
+</div>
+    </div>
+  </header>
+  
+  <div class="flex-1 flex flex-col min-h-screen pt-24">
+    <main class="flex-1 w-full max-w-4xl mx-auto px-6 overflow-x-auto sm:overflow-visible">
+      
+  <article class="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+    <header class="p-8 border-b border-gray-100 relative overflow-hidden">
+      
+      <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-blue-50 to-transparent rounded-full opacity-70 -z-0 blur-2xl transform translate-x-1/4 -translate-y-1/4"></div>
+      
+      
+      
+      
+      <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 relative">Ubuntu仓库构建</h1>
+      
+      <div class="flex flex-wrap items-center text-sm text-gray-500 gap-4 relative">
+        
+        
+        
+        <time datetime="2025-07-11T10:25:29&#43;08:00" class="flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          2025-07-11
+        </time>
+        
+        
+        <span class="flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          5 min read
+        </span>
+
+        
+        <span id="busuanzi_container_page_pv" class="inline-flex items-center whitespace-nowrap">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5 text-gray-400 inline-block flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+          </svg><span class="whitespace-nowrap">Page Views <span id="busuanzi_value_page_pv"></span></span>
+        </span>
+      </div>
+    </header>
+
+    <div class="p-8 prose prose-sm sm:prose lg:prose-lg max-w-none">
+      <h1 id="构建ubuntu-debian软件仓库">构建Ubuntu/ Debian软件仓库</h1>
+<h2 id="安装依赖项">安装依赖项</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt install gcc dpkg-dev gpg nginx
+</span></span></code></pre></div><h2 id="构建创库">构建创库</h2>
+<p>创建存放软件包的仓库目录</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mkdir -p  ~/example/apt_repo/pool/main
+</span></span></code></pre></div><p>将对应软件包存放到该目录下：</p>
+<p><em>大的仓库管理通常在下面创建子文件夹存放对应分类或项目的软件包</em></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cd  ~/example/apt_repo/pool/main <span style="color:#f92672">&amp;&amp;</span> mkdir <span style="color:#f92672">[</span>target_sub_direcotry<span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>将软件包存放到对应的子目录:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cp <span style="color:#f92672">[</span>all_deb_files or holding directories<span style="color:#f92672">]</span>  <span style="color:#f92672">[</span>target_sub_direcotry<span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>依据架构支持创建存放包元数据的目录</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cd ~/example/apt-repo <span style="color:#f92672">&amp;&amp;</span>
+</span></span></code></pre></div><p>返回到apt-repo层目录,依据架构创建存放元包数据的目录</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cd ~/example/apt-repo <span style="color:#f92672">&amp;&amp;</span> mkdir -p ./dists/stable/main/binary-arm64
+</span></span></code></pre></div><p>使用<strong>dpkg-scanpackages</strong> 生成<strong>Packages</strong>记录文件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>dpkg-scanpackages --arch arm64 pool/ &gt; dists/stable/main/binary-arm64/Packages
+</span></span></code></pre></div><p>对Packages文件进行压缩</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cat dists/stable/main/binary-arm64/Packages|gzip -9 &gt;dists/stable/main/binary-a
+</span></span><span style="display:flex;"><span>rm64/Packages.gz 
+</span></span></code></pre></div><p><em>Note:支持的压缩格式：bzip2,lzma,</em></p>
+<p>创建Release文件</p>
+<p>脚本程序，放到example目录下</p>
+<p>generate_release.sh</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/sh
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>set -e
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>do_hash<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    HASH_NAME<span style="color:#f92672">=</span>$1
+</span></span><span style="display:flex;"><span>    HASH_CMD<span style="color:#f92672">=</span>$2
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>HASH_NAME<span style="color:#e6db74">}</span><span style="color:#e6db74">:&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> f in <span style="color:#66d9ef">$(</span>find -type f<span style="color:#66d9ef">)</span>; <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>        f<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>echo $f | cut -c3-<span style="color:#66d9ef">)</span> <span style="color:#75715e"># remove ./ prefix</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">&#34;</span>$f<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Release&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>        echo <span style="color:#e6db74">&#34; </span><span style="color:#66d9ef">$(</span><span style="color:#e6db74">${</span>HASH_CMD<span style="color:#e6db74">}</span> <span style="color:#e6db74">${</span>f<span style="color:#e6db74">}</span>  | cut -d<span style="color:#e6db74">&#34; &#34;</span> -f1<span style="color:#66d9ef">)</span><span style="color:#e6db74"> </span><span style="color:#66d9ef">$(</span>wc -c $f<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cat <span style="color:#e6db74">&lt;&lt; EOF
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Origin: Example Repository
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Label: Example
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Suite: stable
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Codename: stable
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Version: 1.0
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Architectures: amd64 arm64 arm7
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Components: main
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Description: An example software repository
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Date: $(date -Ru)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span><span style="display:flex;"><span>do_hash <span style="color:#e6db74">&#34;MD5Sum&#34;</span> <span style="color:#e6db74">&#34;md5sum&#34;</span>
+</span></span><span style="display:flex;"><span>do_hash <span style="color:#e6db74">&#34;SHA1&#34;</span> <span style="color:#e6db74">&#34;sha1sum&#34;</span>
+</span></span><span style="display:flex;"><span>do_hash <span style="color:#e6db74">&#34;SHA256&#34;</span> <span style="color:#e6db74">&#34;sha256sum&#34;</span>
+</span></span></code></pre></div><p>运行脚本</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cd ~/example/apt_repo/dists/stable
+</span></span><span style="display:flex;"><span>~/example/generate_release.sh &gt; Release
+</span></span></code></pre></div><h2 id="仓库release-file签名">仓库Release file签名</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;%echo Generating an example PGP key
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Key-Type: RSA
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Key-Length: 4096
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Name-Real: example
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Name-Email: yongqi.chen@skysys.cn
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Expire-Date: 0
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">%no-ask-passphrase
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">%no-protection
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">%commit&#34;</span> &gt; /tmp/example-pgp-key.batch
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>export GNUPGHOME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>mktemp -d ~/example/pgpkeys-XXXXXX<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>gpg --no-tty --batch --gen-key /tmp/example-pgp-key.batch
+</span></span></code></pre></div><p>查看生成的密匙</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>gpg --list-keys
+</span></span></code></pre></div><p>导出公钥</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>gpg --armor --export example &gt; ~/example/pgp-key.public
+</span></span></code></pre></div><p>可通过如下指令查看确保导出单个公钥</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cat ~/example/pgp-key.public | gpg --list-packets
+</span></span></code></pre></div><p>导出私钥</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>gpg --armor --export-secret-keys example &gt; ~/example/pgp-key.private
+</span></span></code></pre></div><p>对release 文件进行签名，在开始用生成的密钥进行签名前，需要确保可以导出备份。定义新的GPG密钥位置</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>export GNUPGHOME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>mktemp -d ~/example/pgpkeys-XXXXXX<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span></code></pre></div><p>查看密钥</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>gpg --list-keys
+</span></span></code></pre></div><p>显示如下：</p>
+<hr>
+<p>gpg: keybox &lsquo;/home/ubuntu/example/pgpkeys-bJjHJv/pubring.kbx&rsquo; created
+gpg: /home/ubuntu/example/pgpkeys-bJjHJv/trustdb.gpg: trustdb created</p>
+<p>导入备份的私钥</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cat ~/example/pgp-key.private | gpg --import
+</span></span></code></pre></div><p>现在查看密钥显示应如下：</p>
+<h2 id="homeubuntuexamplepgpkeys-bjjhjvpubringkbx">/home/ubuntu/example/pgpkeys-bJjHJv/pubring.kbx</h2>
+<p>pub   rsa4096 2024-04-08 [SCEA]                                                         <br>
+51E07666AB32B2F6E1996DAABC73497279AA9C24                                          <br>
+uid           [ unknown] example</p>
+<p>对release file 进行签名</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cat ~/example/apt_repo/dists/stable/Release | gpg --default-key example -abs &gt; ~/example/apt_repo/dists/stable/Release.gpg
+</span></span></code></pre></div><p>创建InRelease 文件加速apt 获取速度</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cat ~/example/apt_repo/dists/stable/Release | gpg --default-key example -abs --clearsign &gt; ~/example/apt_repo/dists/stable/InRelease
+</span></span></code></pre></div><p>生成apt仓库源</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;deb [arch=arm64] http://[ip]:[port]/apt_repo stable main&#34;</span> | sudo tee /etc/apt/sources.list.d/example.list
+</span></span></code></pre></div><h2 id="配置nginx-代理">配置NGINX 代理</h2>
+<p>配置文件在  <strong>/etc/nginx/sites-available/default</strong></p>
+<p>根据提示配置http服务</p>
+<h2 id="软件包更新自动维护程序">软件包更新自动维护程序</h2>
+<pre tabindex="0"><code>from hashlib import sha256
+import os
+import subprocess
+from rich.console import Console
+from datetime import datetime
+from time import sleep
+DIRECTORY=&#34;/home/ubuntu/example/apt_repo/pool&#34;
+OUTFILE=&#34;hashes.txt&#34;
+
+ROOT_DIRECTORY= &#34;/home/ubuntu/example/apt_repo&#34;
+
+LOG_DIRECTORY=&#34;/tmp/log/maintaince_tool/&#34;
+
+log_file =&#34;log-&#34;+datetime.strftime(datetime.now(),&#34;%YY-%m-%d-%H-%M-%S&#34;)+&#34;.txt&#34;
+
+log_file =os.path.join(LOG_DIRECTORY,log_file)
+
+logger=Console(file=log_file)
+
+private_key= &#39;&#39;&#39;
+-----BEGIN PGP PRIVATE KEY BLOCK-----
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+-----END PGP PRIVATE KEY BLOCK-----
+&#39;&#39;&#39;  #replace your private key.
+
+def calculate_hash(file_path, hash_algorithm=&#34;sha256&#34;):
+    &#34;&#34;&#34;Calculate hash for a file.&#34;&#34;&#34;
+    hasher = sha256()
+    with open(file_path, &#34;rb&#34;) as f:
+        while True:
+            chunk = f.read(4096)
+            if not chunk:
+                break
+            hasher.update(chunk)
+    return hasher.hexdigest()
+
+def generate_hashes(directory, output_file, hash_algorithm=&#34;sha256&#34;):
+    &#34;&#34;&#34;Generate hashes for all files in a directory and save to output file.&#34;&#34;&#34;
+    hashes=[]
+    with open(output_file, &#34;w&#34;) as f:
+        for root, dirs, files in os.walk(directory):
+            for file in files:
+                file_path = os.path.join(root, file)
+                file_hash = calculate_hash(file_path, hash_algorithm)
+                hashes.append(file_hash)
+    return hashes
+
+def save_hash_to_file(hash_file,hashes):
+    with open(hash_file,&#34;w&#34;)as fp:
+        fp.writelines(hashes)
+        
+
+def load_hashes(hash_file):
+    with open(hash_file,&#34;r&#34;)as fp:
+        hashes=fp.readlines()
+                
+    return hashes
+
+
+
+if __name__==&#34;__main__&#34;:
+    # create log directory
+    if not os.path.exists(LOG_DIRECTORY):
+        os.makedirs(LOG_DIRECTORY)
+        
+    # load hashes
+    hash_file=os.path.join(DIRECTORY,OUTFILE)
+    hashes=[]
+    # 
+    if not os.path.exists(hash_file):
+        hashes=generate_hashes(DIRECTORY,hash_file)
+        save_hash_to_file(hash_file,hashes)
+    else:
+        hashes=load_hashes(hash_file)
+    
+    # maintaining progress.
+    while True:
+        new_hashes=generate_hashes(DIRECTORY,hash_file)
+        if hashes != new_hashes: # repository has been updated
+            # 1.Regenerate Packages File
+                shell_scripts=f&#34;/usr/bin/bash -c &#39; cd {ROOT_DIRECTORY} &amp;&amp;  dpkg-scanpackages --arch arm64 pool/ &gt; ./dists/stable/main/binary-arm64/Packages &amp;&amp; cat dists/stable/main/binary-arm64/Packages|gzip -9 &gt; dists/stable/main/binary-arm64/Packages.gz &#39;&#34;
+                ret=subprocess.call(shell_scripts,shell=True)
+                if ret!=0:
+                    # log errors
+                    logger.log(&#34;[#ff0000]Regenerate Packages file failed.[ff0000]&#34;)
+                    pass
+            # 2. Regenerate Release file
+                shell_scripts=f&#34;/usr/bin/bash -c &#39;cd {os.path.join(ROOT_DIRECTORY,&#39;&#39;&#39;dists/stable&#39;&#39;&#39;)} &amp;&amp; ~/example/generate_release.sh &gt; Release&#39;&#34;
+                ret=subprocess.call(shell_scripts,shell=True)
+                if ret!=0:
+                    logger.log(&#34;[#ff0000]Regenerate Release file failed.[ff0000]&#34;)
+                    pass
+            # 3. sign the release file with private-key
+                shell_scripts=f&#34;/usr/bin/bash -c &#39;gpg --import &lt;&lt; f{private_key}  &amp;&amp; cat {os.path.join(ROOT_DIRECTORY,&#39;&#39;&#39;dists/stable/Release&#39;&#39;&#39;)} | gpg --default --key example -abs &gt; {os.path.join(ROOT_DIRECTORY,&#39;&#39;&#39;dists/stable/Release.gpg&#39;&#39;&#39;)}&#39; &#34;
+                ret=subprocess.call(shell_scripts,shell=True)
+                if ret!=0:
+                     logger.log(&#34;[#ff0000]Sign Release file failed.[ff0000]&#34;)
+            # 4. create InRelease file
+                shell_scripts=f&#34;/usr/bin/bash -c &#39;gpg --import &lt;&lt; f{private_key} &amp;&amp; cat {os.path.join(ROOT_DIRECTORY,&#39;&#39;&#39;dists/stable/Release&#39;&#39;&#39;)} | gpg --default --key example -abs --clearsign &gt; {os.path.join(ROOT_DIRECTORY,&#39;&#39;&#39;dists/stable/InRelease&#39;&#39;&#39;)}&#39; &#34;
+                ret=subprocess.call(shell_scripts,shell=True)
+                if ret!=0:
+                    logger.log(&#34;[#ff0000]Create InRelease file failed.[ff0000]&#34;)
+            #save new hash to file
+                hashes=new_hashes
+                save_hash_to_file(hash_file,hashes)
+        sleep(10)
+</code></pre>
+    </div>
+
+    
+    <div class="px-8 pb-2 text-sm text-gray-500 flex items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+      </svg>
+      Last updated on 2025-07-11
+    </div>
+    
+
+    <footer class="px-8 py-6 bg-gray-50 border-t border-gray-100">
+      
+
+      
+      
+      <div class="mt-6 flex justify-center">
+        <a href="/" class="inline-flex items-center text-gray-600 hover:text-blue-600 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back to Home
+        </a>
+      </div>
+    </footer>
+  </article>
+
+  
+  <div class="max-w-4xl mx-auto mt-8 bg-white rounded-lg shadow-md overflow-hidden" style="--tw-prose-body: #374151; --tw-prose-headings: #111827; --tw-prose-links: #2563eb; --tw-prose-links-hover: #1d4ed8; --tw-prose-code-bg: #f3f4f6; color: #374151; background-color: #ffffff;">
+    
+ 
+  </div>
+
+    </main>
+  </div>
+  
+  <footer class="w-full max-w-4xl mx-auto px-6 overflow-x-auto sm:overflow-visible">
+    <div class="py-8 border-t border-gray-200 bg-gray-50 shadow-inner mt-10">
+  <div class="container mx-auto px-4 max-w-4xl">
+    
+     
+    
+
+    
+    <div class="flex justify-center space-x-8">
+      
+      
+
+      
+      
+
+      
+      
+    </div>
+
+    <div class="text-center mt-6 text-sm text-gray-500">
+      &copy; 2025 Cheny&#39;s Blog | Powered by <a href="https://github.com/Daucloud/hugo-theme-void" class="text-gray-600 hover:text-gray-900 hover:underline">hugo-theme-void</a> | <span id="busuanzi_container_site_pv" style="display: none;">Total visits: <span id="busuanzi_value_site_pv" class="text-gray-600"></span></span>
+    </div>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  </div>
+</div>
+
+  </footer>
+</body>
+</html>
