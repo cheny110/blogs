@@ -26,5 +26,5 @@ pageRef = '/about'
 weight = 40
 
 [caches]
-    [caches.images]
-        dir =':cacheDir/images'
+  [caches.images]
+    dir = ':cacheDir/images'
